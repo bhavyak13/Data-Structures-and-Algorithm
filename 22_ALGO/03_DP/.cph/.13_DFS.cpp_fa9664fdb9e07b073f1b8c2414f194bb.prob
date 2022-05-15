@@ -1,0 +1,1 @@
+{"name":"Local: 13_DFS","url":"d:\\03_DSA\\01_vs_DSA\\22_ALGO\\03_DP\\13_DFS.cpp","tests":[{"id":1642534739362,"input":"7 6\n1 5\n1 4\n1 2\n2 7\n2 6 \n7 3","output":"1 5 4 2 7 3 6"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\03_DSA\\01_vs_DSA\\22_ALGO\\03_DP\\13_DFS.cpp","group":"local","local":true}

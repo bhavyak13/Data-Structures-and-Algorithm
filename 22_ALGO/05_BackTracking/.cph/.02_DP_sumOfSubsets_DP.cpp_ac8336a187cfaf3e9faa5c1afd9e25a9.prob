@@ -1,0 +1,1 @@
+{"name":"Local: 02_DP_sumOfSubsets_DP","url":"d:\\03_DSA\\01_vs_DSA\\22_ALGO\\05_BackTracking\\02_DP_sumOfSubsets_DP.cpp","tests":[{"id":1642775959587,"input":"6 9\n3 34 4 12 5 2","output":"1"}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"d:\\03_DSA\\01_vs_DSA\\22_ALGO\\05_BackTracking\\02_DP_sumOfSubsets_DP.cpp","group":"local","local":true}
