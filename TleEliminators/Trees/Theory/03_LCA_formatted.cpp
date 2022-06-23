@@ -63,54 +63,52 @@ bool cmp(pair<int,int>& a,pair<int, int>& b){return a.second < b.second;}
 int intfloordiv(int x,int y){if(x>=0)return x/y;else return (x-y+1)/y;}
 
 /*------------------------------------begin------------------------------------*/
-int timer,v,l;
-vvi g,prnt;
-vi inTime,outTime,height;
 
-void dfs(int root,int parent,int lvl){
-    inTime[root]=++timer;
-    prnt[root][0]=parent;
-    for(int i=1;i<=l;i++){
-        int intermediate=prnt[root][i-1];
-        if(intermediate!=-1)
-        prnt[root][i]=prnt[intermediate][i-1];
-    }
+void initialDfs(int root,int parent,vvi &g,vvi&prnt,vi&height,int lvl){
     vfor(g[root]){
         if(*itr!=parent){
-            dfs(*itr,root,lvl+1);
+            initialDfs(*itr,root,g,prnt,height,lvl+1);
         }
     }
+    prnt[root][0]=parent;
     height[root]=lvl;
-    outTime[root]=++timer;
 }
 
-void preprocess(){
-    timer=0;
-    l=ceil(log2(v));
-    inTime.resize(v+1);
-    outTime.resize(v+1);
-    height.resize(v+1);
-    prnt.assign(v+1,vi(l+1,-1));
-    dfs(1,-1,1);
-}
-
-//is vrtx1 ancestor of vrtx2?
-bool isAncestor(int vrtx1,int vrtx2){
-    return inTime[vrtx1]<=inTime[vrtx2] && outTime[vrtx1]>=outTime[vrtx2];
-    //equal in case of vrtx1==vrtx2
-}
-
-int lca(int vrtx1,int vrtx2){
-    if(isAncestor(vrtx1,vrtx2)){
-        return vrtx1;
+void fillParents(vvi &g,vvi&prnt,int&totalVertices){
+    for(int i=1;i<=log2(totalVertices)+1;i++){
+        for(int x=1;x<=totalVertices;x++){
+            int intermediate=prnt[x][i-1];
+            if(intermediate!=-1)prnt[x][i]=prnt[intermediate][i-1];
+        }
     }
-    else if(isAncestor(vrtx2,vrtx1)){
-        return vrtx2;
+}
+
+int kthParent(vvi&prnt,int vrtx,int k,int& totalVertices){
+    for(int i=0;i<=log(totalVertices)+1;i++){
+        if((1<<i)&k){
+            vrtx=prnt[vrtx][i];
+        }
     }
-    for(int i=l;i>=0;i--){
-        if(prnt[vrtx1][i]!=-1)
-        if(!isAncestor(prnt[vrtx1][i],vrtx2)){
-            vrtx1=prnt[vrtx1][i];
+    return vrtx;
+}
+
+void precalculations(vvi&g,int v,vvi&prnt,vi &height){
+    initialDfs(1,-1,g,prnt,height,1);
+    fillParents(g,prnt,v);
+}
+
+int lca(int vrtx1,int vrtx2,vvi&prnt,vi&height,int&totalVertices){
+    if(height[vrtx1]>height[vrtx2]){
+        swap(vrtx1,vrtx2);
+    }
+    vrtx2=kthParent(prnt,vrtx2,height[vrtx2]-height[vrtx1],totalVertices);
+    if(vrtx1==vrtx2)return vrtx1;
+    for(int i=log2(totalVertices)+1;i>=0;i--){
+        int prnt1=prnt[vrtx1][i];
+        int prnt2=prnt[vrtx2][i];
+        if(prnt1!=prnt2&&prnt1!=-1&&prnt2!=-1){
+            vrtx1=prnt1;
+            vrtx2=prnt2;
         }
     }
     return prnt[vrtx1][0];
@@ -118,20 +116,20 @@ int lca(int vrtx1,int vrtx2){
 
 void solve()
 {
-    cin>>v;
-    in(q);
-    g.assign(v+1,vi());
+    in2(v,q);
+    vvi g(v+1,vi());
     ffor(i,0,v-1){
         in2(x,y);
         g[x].pb(y);
         g[y].pb(x);
     }
-    preprocess();
-    //queries answerPart!
+    vvi prnt(v+1,vi(log2(v)+2,-1));
+    vi height(v+1,0);
+    precalculations(g,v,prnt,height);
     ffor(i,0,q){
-        in2(x,y);
-        int lcaXY=lca(x,y);
-        cout<<height[x]+height[y]-2*height[lcaXY]<<endl;
+        in2(v1,v2);
+        int lcaOfv1v2=lca(v1,v2,prnt,height,v);
+        pn(abs(height[v1]+height[v2]-2*height[lcaOfv1v2]));
     }
 }
 
