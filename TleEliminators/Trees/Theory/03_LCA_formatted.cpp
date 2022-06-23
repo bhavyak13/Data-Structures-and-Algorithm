@@ -85,6 +85,7 @@ void fillParents(vvi &g,vvi&prnt,int&totalVertices){
 
 int kthParent(vvi&prnt,int vrtx,int k,int& totalVertices){
     for(int i=0;i<=log(totalVertices)+1;i++){
+        if(vrtx==-1)break;
         if((1<<i)&k){
             vrtx=prnt[vrtx][i];
         }

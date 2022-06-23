@@ -63,18 +63,31 @@ bool cmp(pair<int,int>& a,pair<int, int>& b){return a.second < b.second;}
 int intfloordiv(int x,int y){if(x>=0)return x/y;else return (x-y+1)/y;}
 
 /*------------------------------------begin------------------------------------*/
+int v,l;
+vvi g,prnt;
 
-void dfs(int root,int prnt,vvi& g,vvi&parent){
+void dfs(int root,int parent){
+    prnt[root][0]=parent;
+    for(int i=1;i<=l;i++){
+        int intermediate=prnt[root][i-1];
+        if(intermediate!=-1)
+        prnt[root][i]=prnt[intermediate][i-1];
+    }
     vfor(g[root]){
-        if(*itr!=prnt){
-            parent[*itr][0]=root;
-            dfs(*itr,root,g,parent);
+        if(*itr!=parent){
+            dfs(*itr,root);
         }
     }
 }
 
-int kthParent(int vertx,vvi&prnt,int k){
-    for(int i=0;i<=log2(vertx)+1;i++){
+void preprocess(){
+    l=ceil(log2(v));
+    prnt.assign(v+1,vi(l+3,-1));
+    dfs(1,-1);
+}
+
+int kthParent(int vertx,int k){
+    for(int i=0;i<=l;i++){
         if(vertx==-1)break;
         if((1<<i)&k){
             vertx=prnt[vertx][i];
@@ -83,94 +96,23 @@ int kthParent(int vertx,vvi&prnt,int k){
     return vertx;
 }
 
-void fillHeight(int root,int prnt,int lvl,vi&height,vvi&g){
-    vfor(g[root]){
-        if(*itr!=prnt)fillHeight(*itr,root,lvl+1,height,g);
-    }
-    height[root]=lvl;
-}
-
-int lca(int vrtx1,int vrtx2,vi&height,vvi&parent){
-    int heightVertex1=height[vrtx1];
-    int heightVertex2=height[vrtx2];
-
-    int ans=1;//enter the value where tree is rooted!
-
-    // binary search
-    int i=1,j=min(heightVertex1,heightVertex2);
-    while(i<=j){
-        int m=(i+j)/2;
-        int x=kthParent(vrtx1,parent,heightVertex1-m);
-        int y=kthParent(vrtx2,parent,heightVertex2-m);
-        if(x==y){
-            ans=x;
-            i=m+1;
-        }else{
-            j=m-1;
-        }
-    }
-    return ans;
-}
-
-int lcaLogN(int vrtx1,int vrtx2,vi&height,vvi&parent,int v){
-    if(height[vrtx1]>height[vrtx2]){
-        swap(vrtx1,vrtx2);
-    }
-    vrtx2=kthParent(vrtx2,parent,height[vrtx2]-height[vrtx1]);
-    if(vrtx1==vrtx2)return vrtx1;
-    for(int i=log2(v)+1;i>=0;i--){
-        int prnt1=parent[vrtx1][i];
-        int prnt2=parent[vrtx2][i];
-        if(prnt1!=prnt2&&prnt1!=-1&&prnt2!=-1){
-            vrtx1=prnt1;
-            vrtx2=prnt2;
-        }
-    }
-    return parent[vrtx1][0];
-}
-
-
 void solve()
 {
-    //vertices considered are -> on '1 based indexing'
-    in(v);
-    vvi g(v+1,vi());
-    ffor(i,0,v-1){
-        in2(x,y);
-        g[x].pb(y);
-        g[y].pb(x);
-    }
-    vvi parent(v+1,vi(log2(v) + 5,-1));
-    //run a dfs and we can find the first parent of every node
-    parent[1][0]=-1;
-    dfs(1,-1,g,parent);
-    //i.e now parent[x][0] is stored for every node
-
-    //calculating remainaing parents of each node.
-    //parent[x][i] = 2^ith parent of x
-    for(int i=1; i<log2(v)+5; i++){
-        for(int x=1;x<=v;x++){
-            int intermediate=parent[x][i-1];
-            if(intermediate==-1)continue;
-            parent[x][i]=parent[intermediate][i-1];
-        }
-    }
-    // LCA finding : 
-    // log(n)*log(n) approach
-    //preCalculating height
-    vi height(v+1,0);
-    fillHeight(1,-1,1,height,g);
-
+    cin>>v;
     in(q);
-    while(q--){
-        in2(vrtx1,vrtx2);//enter the 2 vertex whose lca you wanna find
-        cout<<lca(vrtx1,vrtx2,height,parent);//log n*log n 
-        cout<<" ";
-        cout<<lcaLogN(vrtx1,vrtx2,height,parent,v)<<endl;//log n
+    g.assign(v+1,vi());
+    ffor(i,2,v+1){
+        in(x);
+        g[x].pb(i);
+        g[i].pb(x);
+    }
+    preprocess();
+    //queries answerPart!
+    ffor(i,0,q){
+        in2(x,k);
+        pn(kthParent(x,k));
     }
 }
-
-
 /*-------------------------------------end-------------------------------------*/
 signed main()
 {
