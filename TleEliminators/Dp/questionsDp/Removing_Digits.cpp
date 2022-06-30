@@ -44,7 +44,6 @@ using namespace std;
 #define pt3(p,q,r) cout<<p<<" "<<q<<" "<<r<<endl
 #define pt4(p,q,r,s) cout<<p<<" "<<q<<" "<<r<<" "<<s<<endl
 #define vfor(v) for (auto itr =v.begin() ; itr!=v.end(); itr++)
-#define vfor2(v) for (auto itr2 =v.begin() ; itr2!=v.end(); itr2++)
 #define vbfor(v) for (auto itr =v.rbegin() ; itr!=v.rend(); itr++)
 #define ffor(i, a, b) for (int i = a; i < b; i++)
 #define bfor(i, a, b) for (int i = a - 1; i >= b; i--)
@@ -62,30 +61,33 @@ bool compr(const pair<int, int> &i1, const pair<int, int> i2){if (i1.first > i2.
 //sort map by value //increasing order
 bool cmp(pair<int,int>& a,pair<int, int>& b){return a.second < b.second;}
 int intfloordiv(int x,int y){if(x>=0)return x/y;else return (x-y+1)/y;}
+
 /*------------------------------------begin------------------------------------*/
+
 auto fun(){}
+
 void solve()
 {
-    in2(n,sum);
-    vi a(n+1);
+    in(n);
+    vi dp(n+5,1e8);
+    // dp[i] -> minimum steps to go from i to 0
+    dp[0]=0;
     ffor(i,1,n+1){
-        cin>>a[i];
-    }
-    // dp[x] -> valid ways to make sum of x;
-    int dp[sum+1]={0};
-    dp[0]=1;
-    for(int i = 1; i <= n; i++){
-        ffor(x,0,sum+1){
-            if(x>=a[i])
-            dp[x]=(dp[x]+dp[x-a[i]])%mod;
+        int x=i;
+        while(x>0){
+            int d=x%10;
+            x/=10;
+            dp[i]=min(1+dp[i-d],dp[i]);
         }
     }
-    pn(dp[sum]);
+    pn(dp[n]);
 }
+
 /*-------------------------------------end-------------------------------------*/
 signed main()
 {
     mahadev;
+
     solve();
     return 0;
 }

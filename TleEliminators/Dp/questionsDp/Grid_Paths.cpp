@@ -44,14 +44,13 @@ using namespace std;
 #define pt3(p,q,r) cout<<p<<" "<<q<<" "<<r<<endl
 #define pt4(p,q,r,s) cout<<p<<" "<<q<<" "<<r<<" "<<s<<endl
 #define vfor(v) for (auto itr =v.begin() ; itr!=v.end(); itr++)
-#define vfor2(v) for (auto itr2 =v.begin() ; itr2!=v.end(); itr2++)
 #define vbfor(v) for (auto itr =v.rbegin() ; itr!=v.rend(); itr++)
 #define ffor(i, a, b) for (int i = a; i < b; i++)
 #define bfor(i, a, b) for (int i = a - 1; i >= b; i--)
 #define all(v) v.begin(),v.end()
 #define Y "YES" 
 #define N "NO" 
-// #define int long long
+#define int long long
 int gcd(int a, int b){if (b == 0)return a;return gcd(b, a % b);}
 int count_digit(int n){int c = 0;while (n > 0){c++;n /= 10;}return c;}
 void maxi(int &a, int &b){if (a > b){swap(a, b);}}
@@ -62,30 +61,41 @@ bool compr(const pair<int, int> &i1, const pair<int, int> i2){if (i1.first > i2.
 //sort map by value //increasing order
 bool cmp(pair<int,int>& a,pair<int, int>& b){return a.second < b.second;}
 int intfloordiv(int x,int y){if(x>=0)return x/y;else return (x-y+1)/y;}
+
 /*------------------------------------begin------------------------------------*/
+
 auto fun(){}
+
 void solve()
 {
-    in2(n,sum);
-    vi a(n+1);
-    ffor(i,1,n+1){
-        cin>>a[i];
+    in(n);
+    vector<string>g;
+    ffor(i,0,n){
+        string s;cin>>s;
+        g.pb(s);
     }
-    // dp[x] -> valid ways to make sum of x;
-    int dp[sum+1]={0};
-    dp[0]=1;
-    for(int i = 1; i <= n; i++){
-        ffor(x,0,sum+1){
-            if(x>=a[i])
-            dp[x]=(dp[x]+dp[x-a[i]])%mod;
+    vvi dp(n+1,vi(n+1,0));
+    // dp[i][j] -> number of paths to point (i,j)
+    if(g[0][0]=='.')dp[1][1]=1;
+    ffor(i,1,n+1){
+        ffor(j,1,n+1){
+            if(i==1&&j==1)continue;
+            if(g[i-1][j-1]=='.'){
+                dp[i][j]=(dp[i][j-1]+dp[i-1][j])%mod;
+            }
+            else{
+                dp[i][j]=0;
+            }
         }
     }
-    pn(dp[sum]);
+    pn(dp[n][n]);
 }
+
 /*-------------------------------------end-------------------------------------*/
 signed main()
 {
     mahadev;
+
     solve();
     return 0;
 }
