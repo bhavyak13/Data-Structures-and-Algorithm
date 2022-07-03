@@ -70,9 +70,23 @@ void solve()
 {
     in(n);
     vi a(n);
+    int s=0;
     ffor(i,0,n)cin>>a[i];
-    // dp[i][j] -> maximum score in range i to j
-
+    ffor(i,0,n)s+=a[i];
+    // dp[l][r] -> maximum value of scoreOfPlayer1-scoreOfPlayer2 in range l to r
+    // if he choose l th index then dp[l][r]=a[l]-dp[i+1][r]
+    // else if he choose r th index then dp[l][r]=a[r]-dp[l][j-1]
+    vvi dp(n+1,vi(n+1,0));
+    bfor(i,n,0){
+        ffor(j,i,n){
+            if(i==j)dp[i][j]=a[i];
+            else dp[i][j]=max(a[i]-dp[i+1][j],a[j]-dp[i][j-1]);
+        }
+    }
+    // score of 1 - score of 2 = dp[0][n];
+    // score of 1 + score of 2 = sum of a[i]'s
+    // hence score of 1 = (dp[0][n] + sum) / 2
+    pn((dp[0][n]+s)/2);
 }
 
 /*-------------------------------------end-------------------------------------*/
