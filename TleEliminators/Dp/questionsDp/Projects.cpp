@@ -59,41 +59,37 @@ int mymax(int a, int b, int c){int big = max(a, c);return max(big, b);}
 // first -> decreasing order && second -> increasing order
 bool compr(const pair<int, int> &i1, const pair<int, int> i2){if (i1.first > i2.first)return true;if (i1.first == i2.first)return i1.second < i2.second;return false;}
 //sort map by value //increasing order
-bool cmp(pair<int,int>& a,pair<int, int>& b){return a.second < b.second;}
+bool cmp(array<int,3>& a,array<int,3>& b){return a[1] < b[1];}
 int intfloordiv(int x,int y){if(x>=0)return x/y;else return (x-y+1)/y;}
-
 /*------------------------------------begin------------------------------------*/
-
 auto fun(){}
-
 void solve()
 {
     in(n);
-    vi a(n);
-    int s=0;
-    ffor(i,0,n)cin>>a[i];
-    ffor(i,0,n)s+=a[i];
-    // dp[l][r] -> maximum value of scoreOfPlayer1-scoreOfPlayer2 in range l to r
-    // if he choose l th index then dp[l][r]=a[l]-dp[i+1][r]
-    // else if he choose r th index then dp[l][r]=a[r]-dp[l][j-1]
-    vvi dp(n+1,vi(n+1,0));
-    bfor(i,n,0){
-        ffor(j,i,n){
-            if(i==j)dp[i][j]=a[i];
-            else dp[i][j]=max(a[i]-dp[i+1][j],a[j]-dp[i][j-1]);
-        }
+    vector<array<int,3>>v(n);
+    ffor(i,0,n){
+        cin>>v[i][0]>>v[i][1]>>v[i][2];
     }
-    // score of 1 - score of 2 = dp[0][n];
-    // score of 1 + score of 2 = sum of a[i]'s
-    // hence score of 1 = (dp[0][n] + sum) / 2
-    pn((dp[0][n-1]+s)/2);
+    sort(all(v),cmp);
+    vi s(n),e(n),value(n);
+    ffor(i,0,n){
+        s[i]=v[i][0];
+        e[i]=v[i][1];
+        value[i]=v[i][2];
+    }
+    vi dp(n+1,0);
+    // dp[i]-> maximum amount of money we can earn before project i
+    ffor(i,0,n){
+        // last possible project it can take
+        int indx=lb(all(e),s[i])-e.begin();
+        dp[i+1]=max(dp[indx]+value[i],dp[i]);
+    }
+    pn(dp[n]);
 }
-
 /*-------------------------------------end-------------------------------------*/
 signed main()
 {
     mahadev;
-
     solve();
     return 0;
 }

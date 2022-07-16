@@ -61,39 +61,52 @@ bool compr(const pair<int, int> &i1, const pair<int, int> i2){if (i1.first > i2.
 //sort map by value //increasing order
 bool cmp(pair<int,int>& a,pair<int, int>& b){return a.second < b.second;}
 int intfloordiv(int x,int y){if(x>=0)return x/y;else return (x-y+1)/y;}
-
+ll mod_add(ll a, ll b, ll m) {a = a % m; b = b % m; return (((a + b) % m) + m) % m;}
+ll mod_mul(ll a, ll b, ll m) {a = a % m; b = b % m; return (((a * b) % m) + m) % m;}
+ll mod_sub(ll a, ll b, ll m) {a = a % m; b = b % m; return (((a - b) % m) + m) % m;}
 /*------------------------------------begin------------------------------------*/
-
-auto fun(){}
+int maxOperations=200005;
+vvi dp(10,vi(maxOperations,0));
+// dp[i][j] -> number of digits will i breakdown into on applying j operations!
+void preComputation(){
+    ffor(i,0,10){
+        dp[i][0]=1;
+    }
+    ffor(j,1,maxOperations){
+        ffor(i,0,9){
+            dp[i][j]=dp[i+1][j-1];
+        }
+        dp[9][j]=mod_add(dp[0][j-1],dp[1][j-1],mod);
+    }
+}
 
 void solve()
 {
-    in(n);
-    vi a(n);
-    int s=0;
-    ffor(i,0,n)cin>>a[i];
-    ffor(i,0,n)s+=a[i];
-    // dp[l][r] -> maximum value of scoreOfPlayer1-scoreOfPlayer2 in range l to r
-    // if he choose l th index then dp[l][r]=a[l]-dp[i+1][r]
-    // else if he choose r th index then dp[l][r]=a[r]-dp[l][j-1]
-    vvi dp(n+1,vi(n+1,0));
-    bfor(i,n,0){
-        ffor(j,i,n){
-            if(i==j)dp[i][j]=a[i];
-            else dp[i][j]=max(a[i]-dp[i+1][j],a[j]-dp[i][j-1]);
-        }
+    in2(n,m);
+    vi occ(10,0);
+    int ans=0;
+    while(n>0){
+        int t=n%10;
+        n/=10;
+        occ[t]++;
     }
-    // score of 1 - score of 2 = dp[0][n];
-    // score of 1 + score of 2 = sum of a[i]'s
-    // hence score of 1 = (dp[0][n] + sum) / 2
-    pn((dp[0][n-1]+s)/2);
+    ffor(i,0,10){
+        ans=mod_add(mod_mul(occ[i],dp[i][m],mod),ans,mod);
+    }
+    pn(ans);
 }
 
 /*-------------------------------------end-------------------------------------*/
 signed main()
 {
     mahadev;
-
-    solve();
+    int t;
+    cin>>t;
+    preComputation();
+    while(t--)
+    {
+        solve();
+    }
+    
     return 0;
 }
