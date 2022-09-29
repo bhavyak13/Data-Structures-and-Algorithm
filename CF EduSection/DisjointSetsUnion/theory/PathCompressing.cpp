@@ -2,7 +2,6 @@
 using namespace std;
 
 // Path Compressing 
-
 class DisjointSet{
 private:
     vector<int> prnt;
@@ -19,6 +18,6 @@ public:
     }
     void merge(int x,int y){
         x=get(x),y=get(y);
-        prnt[x]=y;
+        prnt[x]=y;// y <- x
     }
 };
