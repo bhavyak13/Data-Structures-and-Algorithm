@@ -85,38 +85,40 @@ vector<int>factor(int n){
 
 
 /*------------------------------------begin------------------------------------*/
-
-
-
+vi a;
 int n;
-vector<int>a;
-//  10, 7, 8, 9, 1, 5 
-int Partition(int l,int h){
-    int i=l,j=h;
-    while(i<j){
-        while(i<n&&a[i]<=a[l])i++;
-        while(j>l&&a[j]>=a[l])j--;
-        if(i<j){
-            swap(a[i],a[j]);
-        }
+void merge(int l,int mid,int h){
+    pt3(l,mid,h);
+    vi x,y;
+    for(int i=l;i<=mid;i++)x.pb(a[i]);
+    for(int i=mid+1;i<=h;i++)y.pb(a[i]);
+    int i=0,j=0,xs=x.sz,ys=y.sz;
+    vi arr(100);int p=0;
+    while(i<xs&&j<ys){
+        pt3("SOrt :::  ",x[i],y[j]);
+        if(x[i]<y[j])arr[p]=x[i++];
+        else arr[p]=y[j++];
+        pn(arr[p]);
     }
-    swap(a[j],a[l]);
-    return j;
+    while(i<xs)arr[p++]=x[i++];
+    while(j<ys)arr[p++]=y[j++];
+    pt2("P:",p);
+    ffor(i,0,p)pt(arr[i]);
+    cout<<endl;
 }
-
-void quickSort(int l,int h){
-    if(l<h){
-        int j=Partition(l,h);
-        quickSort(l,j-1);
-        quickSort(j+1,h);
-    }
+void mergeSort(int l,int h){
+    if(l>=h)return;
+    int mid=(l+h)>>1;
+    mergeSort(l,mid);
+    mergeSort(mid+1,h);
+    merge(l,mid,h);
 }
 
 void solve()
 {
     a={ 10, 7, 69, 8, 9, 1, 5 };
     n=a.sz;
-    quickSort(0,n-1);
+    mergeSort(0,n-1);
     for(auto i:a)pt(i);
 }
 

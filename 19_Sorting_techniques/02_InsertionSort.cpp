@@ -86,38 +86,24 @@ vector<int>factor(int n){
 
 /*------------------------------------begin------------------------------------*/
 
-
-
-int n;
-vector<int>a;
-//  10, 7, 8, 9, 1, 5 
-int Partition(int l,int h){
-    int i=l,j=h;
-    while(i<j){
-        while(i<n&&a[i]<=a[l])i++;
-        while(j>l&&a[j]>=a[l])j--;
-        if(i<j){
-            swap(a[i],a[j]);
+void insertionSort(vi a){
+    int n=a.sz;
+    ffor(i,0,n){
+        int e=a[i];
+        int j=i;
+        while(j>0&&a[j-1]>a[j]){
+            swap(a[j],a[j-1]);
+            j--;
         }
     }
-    swap(a[j],a[l]);
-    return j;
-}
-
-void quickSort(int l,int h){
-    if(l<h){
-        int j=Partition(l,h);
-        quickSort(l,j-1);
-        quickSort(j+1,h);
-    }
+    for(auto i:a)pt(i);
 }
 
 void solve()
 {
+    vi a;
     a={ 10, 7, 69, 8, 9, 1, 5 };
-    n=a.sz;
-    quickSort(0,n-1);
-    for(auto i:a)pt(i);
+    insertionSort(a);
 }
 
 /*-------------------------------------end-------------------------------------*/
