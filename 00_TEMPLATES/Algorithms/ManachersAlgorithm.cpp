@@ -26,48 +26,37 @@ odd :
 2. if size of palindrome centered at i is x, then dp[i] stores (x+1)/2;
 */
 /*------------------------------------begin------------------------------------*/
-
-vector<int> manacher_odd(string s){
-    s="$"+s+"^";
-    int n=s.size();
-    int l=1,r=1;
-    vector<int> dp(n,1);
-    for(int i=0;i<n;i++){
-        int mirror=l+(r-i);
-        dp[i]=max(0,min(dp[r-i],dp[mirror]));
-        while(s[i+dp[i]]==s[i-dp[i]])dp[i]++;
-        if(i+dp[i]>r){
-            r=i+dp[i];l=i-dp[i];
+vector<int> manacher_odd(string s) {
+    int n = s.size();
+    s = "$" + s + "^";
+    vector<int> p(n + 2);
+    int l = 1, r = 1;
+    for(int i = 1; i <= n; i++) {
+        p[i] = max(0, min(r - i, p[l + (r - i)]));
+        while(s[i - p[i]] == s[i + p[i]]) {
+            p[i]++;
+        }
+        if(i + p[i] > r) {
+            l = i - p[i], r = i + p[i];
         }
     }
-    return vector<int>(dp.begin()+1,dp.end()-1);
+    return vector<int>(begin(p) + 1, end(p) - 1);
 }
-vector<int> manacher(string s){
+
+vector<int> manacher(string s) {
     string t;
-    for(auto c:s){
-        t+=string("#")+c;
+    for(auto c: s) {
+        t += string("#") + c;
     }
-    auto res=manacher_odd(t+"#");
-    return vector<int>(begin(res),end(res));
-    // return vector<int>(begin(res)+1,end(res)-1);
+    auto res = manacher_odd(t + "#");
+    return vector<int>(begin(res) + 1, end(res) - 1);
 }
+
 void solve(){
     string s;
     cin>>s;
     vector<int> d=manacher(s);
-    int n=s.size();
-    vector<int> dp(n);
-    if(n%2){ // odd
-        for(int i=0;i<n;i++){
-            dp[i]=d[2*i+1]-1;
-            cout<<(dp[i])<<" ";
-        }
-    }else{
-        for(int i=0;i<n;i++){
-            dp[i]=d[2*i]-1;
-            cout<<(dp[i])<<" ";
-        }
-    }
+    
 }
 // EVEN : if i & i-1 are center, then length of longest palindrom with center as i, i-1 is given by dp[i];
 
