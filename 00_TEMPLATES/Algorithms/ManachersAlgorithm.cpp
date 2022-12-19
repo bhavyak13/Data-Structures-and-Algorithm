@@ -127,9 +127,9 @@ void solve(){
             dp[i]=d[2*i]-1;
             pt(dp[i]);
         }
-        // if i & i-1 are center, then length of longest palindrom with center as i, i-1 is given by dp[i];
     }
 }
+// EVEN : if i & i-1 are center, then length of longest palindrom with center as i, i-1 is given by dp[i];
 
 /*-------------------------------------end-------------------------------------*/
 signed main()
