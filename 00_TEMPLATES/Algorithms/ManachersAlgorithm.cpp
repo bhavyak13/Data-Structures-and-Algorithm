@@ -61,44 +61,32 @@ template<class T>istream& operator >> (istream &is, vector<T>& V) {for(auto &e :
 #define all(v) v.begin(),v.end()
 #define Y "YES" 
 #define N "NO" 
+
 // #define int long long
-int gcd(int a, int b){if (b == 0)return a;return gcd(b, a % b);}
-int count_digit(int n){int c = 0;while (n > 0){c++;n /= 10;}return c;}
-void maxi(int &a, int &b){if (a > b){swap(a, b);}}
-int mymin(int a, int b, int c){int mini = min(a, c);return min(mini, b);}
-int mymax(int a, int b, int c){int big = max(a, c);return max(big, b);}
-// first -> decreasing order && second -> increasing order
-bool cmp1(const pair<int, int> &i1, const pair<int, int> i2){if (i1.first > i2.first)return true;if (i1.first == i2.first)return i1.second < i2.second;return false;}
-//sort map by value //increasing order
-bool cmp2(pair<int,int>& a,pair<int, int>& b){return a.second < b.second;}
-int intfloordiv(int x,int y){if(x>=0)return x/y;else return (x-y+1)/y;}
-struct cmp {constexpr bool operator()(pair<int, int> const& a,pair<int, int> const& b)const noexcept{return a.first > b.first;}};
-vector<int>factor(int n){
-    vector<int>ans;
-    if(!(n%2))ans.push_back(2);
-    while(!(n%2))n/=2;
-    for(int i=3;i*i<=n;i+=2){
-        if(n%i==0)ans.push_back(i);
-        while(n%i==0)n/=i;
-    }
-    if(n>1)ans.push_back(n);
-    return ans;
-}
 
-
-/*------------------------------------begin------------------------------------
+/*
     x [a b a d a b a] d
     0 [1 2 3 4 5 6 7] 8 
 dp[i]  1 2 1 4 1    
        l M   x   i r    
             mirror of y  -> r-y+l
 */
+/*------------------------------------begin------------------------------------*/
 
-auto fun(){}
+/*
+
+even : 
+    d[2*i] = 2 * d2[i] + 1
+odd :
+    d[2*i+1] = 2 * d1[i]
+
+*/
+
 /*
 1. i is the index of the center letter of the current palindrome.
 2. if size of palindrome centered at i is x, then dp[i] stores (x+1)/2;
 */
+
 vector<int> manacher_odd(string s){
     s="$"+s+"^";
     int n=s.size();
@@ -123,29 +111,19 @@ vector<int> manacher(string s){
     return vector<int>(begin(res),end(res));
     // return vector<int>(begin(res)+1,end(res)-1);
 }
-
-/*
-
-even : 
-    d[2*i] = 2 * d2[i] + 1
-odd :
-    d[2*i+1] = 2 * d1[i]
-
-*/
-
 void solve(){
     string s;
     cin>>s;
-    vi d=manacher(s);
-    int n=s.sz;
-    vi dp(n);
+    vector<int> d=manacher(s);
+    int n=s.size();
+    vector<int> dp(n);
     if(n%2){ // odd
-        ffor(i,0,n){
+        for(int i=0;i<n;i++){
             dp[i]=d[2*i+1]-1;
             pt(dp[i]);
         }
     }else{
-        ffor(i,0,n){
+        for(int i=0;i<n;i++){
             dp[i]=d[2*i]-1;
             pt(dp[i]);
         }
