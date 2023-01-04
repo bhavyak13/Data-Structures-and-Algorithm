@@ -1,5 +1,3 @@
-// Online Java Compiler
-// Use this editor to write, compile and run your Java code online
 class Stackk{
     int[] arr=new int[100];
     int top=0;
@@ -31,4 +29,3 @@ class StackProgram {
         // System.out.println(stk.empty());
     }
 }
-
