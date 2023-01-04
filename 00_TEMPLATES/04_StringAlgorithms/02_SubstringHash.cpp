@@ -123,31 +123,50 @@ for (int i = 2; i * i <= n; i++) {
 */
 
 
-// for strins s of length n
-// hash (s) = s[0] + s[1]*p + s[2]*(p^2) + ... + s[n-1]*(p^(n-1)) mod m
-// where m,p are prime number
+// Fast hash calculation of substrings of given string in O(1)
 
+// 0 based indexing
+vector<int>dp;
+vector<int>inv_hash;
 
-long long compute_hash(string const& s) {
-    const int p = 31;
-    const int m = 1e9 + 7;
-    long long hash_value = 0;
-    long long p_pow = 1;
-    for (char c : s) {
-        hash_value = (hash_value + ((c - 'a' + 1) * p_pow)%m) % m;
-        p_pow = (p_pow * p) % m;
+void computeSubstringHash(string s){
+    int n=s.size();
+    dp.assign(n,0);
+    inv_hash.assign(n,0);
+
+    int p=31;
+    int p_power=1;
+    dp[0]=(s[0]-'a'+1);
+    inv_hash[0]=1;
+
+    ffor(i,1,n){
+        p_power = ( p_power * p ) %mod;
+        inv_hash[i]=inv(p_power);
+        int tempHash= ( p_power * (s[i]-'a'+1) )%mod;
+        dp[i] = ( dp[i-1] + tempHash )%mod;
     }
-    return hash_value;
 }
 
+int substringHashQuery(int l,int r){
+    int tl=0;
+    if(l)tl=dp[l-1];
+    int x=((dp[r]-tl)+mod)%mod;
+    x=(x*inv_hash[l])%mod;
+    return x;
+}
 
-auto fun(){}
 
 void solve()
 {
     string s;
     cin>>s;
-    pn(compute_hash(s));
+    computeSubstringHash(s);
+    in(q);
+    while(q--){
+        in2(l,r);
+        int x=substringHashQuery(l,r);
+        pn(x);
+    }
 }
 
 /*-------------------------------------end-------------------------------------*/
