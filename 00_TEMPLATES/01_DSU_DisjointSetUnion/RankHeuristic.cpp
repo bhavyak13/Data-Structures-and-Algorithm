@@ -13,7 +13,8 @@ public:
         for(int i=0;i<=n;i++)prnt[i]=i;
     }
     int get(int x){
-        return (x==prnt[x])?x:get(prnt[x]);
+        if(x==prnt[x])return x;
+        return prnt[x]=get(prnt[x]);
     }
     void merge(int x,int y){
         x=get(x),y=get(y);

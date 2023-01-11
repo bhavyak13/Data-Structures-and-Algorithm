@@ -90,19 +90,8 @@ vector<int>factor(int n){
 }
 
 // MODULO operations: 
-int modmul(int a, int b) {a = a % mod; b = b % mod; return (((a * b) % mod) + mod) % mod;}
 int modadd(int a, int b) {a = a % mod; b = b % mod; return (((a + b) % mod) + mod) % mod;}
 int pwr(int a, int b) {a %= mod; int res = 1; while (b > 0) {if (b & 1) res = res * a % mod; a = a * a % mod; b >>= 1;} return res;}
-int binExpo(int a,int b){
-    if(!b)return 1;
-    int res=binExpo(a,b/2);
-    if(b&1)return modmul(a,modmul(res,res));
-    else return modmul(res,res);
-}
-// (a / b) % mod != (a% mod) / (b% mod).
-// So we use Modular Multiplicative Inverse, i.e (A / B) % mod = A * ( B ^ -1 ) % mod
-// for prime modulus m : (a^(m-2) = a^-1) mod m
-int inv(int a){return binExpo(a,mod-2);}
 
 
 // Sieve of Eratosthenes
@@ -122,35 +111,44 @@ for (int i = 2; i * i <= n; i++) {
     
 */
 
+ll modmul(ll a, ll b) {a = a % mod; b = b % mod; return (((a * b) % mod) + mod) % mod;}
+ll binExpo(ll a,ll b){
+    if(!b)return 1;
+    ll res=binExpo(a,b/2);
+    if(b&1)return modmul(a,modmul(res,res));
+    else return modmul(res,res);
+}
+ll inv(ll a){return binExpo(a,mod-2);}
 
 // Fast hash calculation of substrings of given string in O(1)
 
 // 0 based indexing
-vector<int>dp;
-vector<int>inv_hash;
+#define ll long long
+vector<ll>dp;
+vector<ll>inv_hash;
 
 void computeSubstringHash(string s){
     int n=s.size();
     dp.assign(n,0);
     inv_hash.assign(n,0);
 
-    int p=31;
-    int p_power=1;
+    ll p=31;
+    ll p_power=1;
     dp[0]=(s[0]-'a'+1);
     inv_hash[0]=1;
 
-    ffor(i,1,n){
+    for (int i = 1; i < n; i++){
         p_power = ( p_power * p ) %mod;
         inv_hash[i]=inv(p_power);
-        int tempHash= ( p_power * (s[i]-'a'+1) )%mod;
+        ll tempHash= ( p_power * (s[i]-'a'+1) )%mod;
         dp[i] = ( dp[i-1] + tempHash )%mod;
     }
 }
 
-int substringHashQuery(int l,int r){
-    int tl=0;
+ll substringHashQuery(int l,int r){
+    ll tl=0;
     if(l)tl=dp[l-1];
-    int x=((dp[r]-tl)+mod)%mod;
+    ll x=((dp[r]-tl)+mod)%mod;
     x=(x*inv_hash[l])%mod;
     return x;
 }
