@@ -3,7 +3,7 @@
  Institute : MAIT
       Dept : CST
      Email : bhavyakawatra6@gmail.com
- CF handle : BhavyaKawatra13
+ CF handle : bhavyakawatra
 */
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
@@ -17,11 +17,10 @@ typedef tree<int, null_type, less_equal<int>, rb_tree_tag,tree_order_statistics_
 template<class T>istream& operator >> (istream &is, vector<T>& V) {for(auto &e : V)is >> e;return is;}
 
 #define db double
-#define pi pair<int,int>
-#define ai array<int,2>
 #define im INT_MAX
 #define ll long long
 #define mod 1000000007
+#define mod2 998244353
 #define vi vector<int>
 #define vb vector<bool>
 #define vvi vector<vi>
@@ -62,32 +61,13 @@ template<class T>istream& operator >> (istream &is, vector<T>& V) {for(auto &e :
 #define bfor(i, a, b) for (int i = a - 1; i >= b; i--)
 #define all(v) v.begin(),v.end()
 #define Y "YES" 
-#define N "NO" 
+#define NO "NO" 
 #define int long long
-int gcd(int a, int b){if (b == 0)return a;return gcd(b, a % b);}
-int count_digit(int n){int c = 0;while (n > 0){c++;n /= 10;}return c;}
-void maxi(int &a, int &b){if (a > b){swap(a, b);}}
-int mymin(int a, int b, int c){int mini = min(a, c);return min(mini, b);}
-int mymax(int a, int b, int c){int big = max(a, c);return max(big, b);}
-// first -> decreasing order && second -> increasing order
-bool cmp1(const pair<int, int> &i1, const pair<int, int> i2){if (i1.first > i2.first)return true;if (i1.first == i2.first)return i1.second < i2.second;return false;}
-//sort vector by second value //increasing order
-bool cmp2(pair<int,int>& a,pair<int, int>& b){return a.second < b.second;}
-// priority_queue of pairs (min) 
-struct cmp {constexpr bool operator()(pair<int, int> const& a,pair<int, int> const& b)const noexcept{return a.first > b.first;}};
-struct cmparr {constexpr bool operator()(array<int, 2> const& a,array<int, 2>  const& b)const noexcept{return a[0] > b[0];}};
+#define pi pair<int,int>
+struct cmp {constexpr bool operator()(pi const& a, pi const& b)const noexcept{return a.first > b.first;}};
+#define ai array<int,2>
+struct cmparr {constexpr bool operator()(ai const& a, ai const& b)const noexcept{return a[0] > b[0];}};
 int intfloordiv(int x,int y){if(x>=0)return x/y;else return (x-y+1)/y;}
-vector<int>factor(int n){
-    vector<int>ans;
-    if(!(n%2))ans.push_back(2);
-    while(!(n%2))n/=2;
-    for(int i=3;i*i<=n;i+=2){
-        if(n%i==0)ans.push_back(i);
-        while(n%i==0)n/=i;
-    }
-    if(n>1)ans.push_back(n);
-    return ans;
-}
 
 // MODULO operations: 
 int modmul(int a, int b) {a = a % mod; b = b % mod; return (((a * b) % mod) + mod) % mod;}
@@ -99,68 +79,54 @@ int binExpo(int a,int b){
     if(b&1)return modmul(a,modmul(res,res));
     else return modmul(res,res);
 }
-// (a / b) % mod != (a% mod) / (b% mod).
-// So we use Modular Multiplicative Inverse, i.e (A / B) % mod = A * ( B ^ -1 ) % mod
-// for prime modulus m : (a^(m-2) = a^-1) mod m
 int inv(int a){return binExpo(a,mod-2);}
 
 
-// Sieve of Eratosthenes
-/*
-int n;
-vector<bool> is_prime(n+1, true);
-is_prime[0] = is_prime[1] = false;
-for (int i = 2; i * i <= n; i++) {
-    if (is_prime[i]) {
-        for (int j = i * i; j <= n; j += i)
-            is_prime[j] = false;
-    }
-}
-*/
+
 
 /*------------------------------------begin------------------------------------
-    
+
 */
 
-
-// for strings s of length n
-// hash (s) = s[0] + s[1]*p + s[2]*(p^2) + ... + s[n-1]*(p^(n-1)) mod m
-// where m,p are prime number
-
-
-long long compute_hash(string const& s) {
-    const int p = 31;
-    const int m = 1e9 + 7;
-    long long hash_value = 0;
-    long long p_pow = 1;
-    for (char c : s) {
-        hash_value = (hash_value + ((c - 'a' + 1) * p_pow)%m) % m;
-        p_pow = (p_pow * p) % m;
+// rabin karp
+vi rabin_karp(string a,string b){
+    int n=a.sz;
+    int m=b.sz;
+    int p=31;
+    vi hash(n+1,0);
+    vi p_pow(max(n,m)+5,1);
+    ffor(i,1,p_pow.sz){
+        p_pow[i]=modmul(p_pow[i-1],p);
     }
-    return hash_value;
+    ffor(i,1,n+1){
+        int h=((a[i-1]-'a'+1)*p_pow[i])%mod;
+        hash[i]=(hash[i-1]+h)%mod;
+    }
+    int h=0;
+    ffor(i,1,m+1){
+        int x=modmul((b[i-1]-'a'+1),p_pow[i]);
+        h=modadd(h,x);
+    }
+    vi occurances;
+    for(int i=m;i<=n;i++){
+        int h_temp=((hash[i]-hash[i-m])+mod)%mod;
+        if(h_temp==h*p_pow[i-m]%mod)occurances.pb(i);
+    }
+    return occurances;
 }
-
-
-auto fun(){}
 
 void solve()
 {
-    string s;
-    cin>>s;
-    pn(compute_hash(s));
+    string a,b;
+    cin>>a>>b;
+    auto occurances=rabin_karp(a,b);
+    pn(occurances.sz);
 }
 
 /*-------------------------------------end-------------------------------------*/
 signed main()
 {
-    // mahadev;
-    int t;
-    cin>>t;
-    
-    while(t--)
-    {
-        solve();
-    }
-    
+    mahadev;
+    solve();
     return 0;
 }
