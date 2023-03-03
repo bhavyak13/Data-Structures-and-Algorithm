@@ -110,10 +110,15 @@ vi rabin_karp(string a,string b){
     vi occurances;
     for(int i=m;i<=n;i++){
         int h_temp=((hash[i]-hash[i-m])+mod)%mod;
-        if(h_temp==h*p_pow[i-m]%mod)occurances.pb(i);
+        if(h_temp==h*p_pow[i-m]%mod)occurances.pb(i-m);
     }
     return occurances;
 }
+// Driver code
+// string a,b;
+// cin>>a>>b;
+// auto occurances=rabin_karp(a,b);
+// pn(occurances.sz);
 
 void solve()
 {
