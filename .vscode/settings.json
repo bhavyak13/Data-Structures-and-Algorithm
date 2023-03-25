@@ -74,7 +74,9 @@
         "typeindex": "cpp",
         "typeinfo": "cpp",
         "valarray": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "__string": "cpp",
+        "filesystem": "cpp"
     },
     "discord.lowerDetailsDebugging": "Hello there :)",
     "discord.lowerDetailsEditing": "Hello there :)",
